@@ -1,0 +1,15 @@
+C:\Users\Ibykus\source\repos\TSP\TSP\bin\Debug\TSP.exe.config
+C:\Users\Ibykus\source\repos\TSP\TSP\bin\Debug\TSP.exe
+C:\Users\Ibykus\source\repos\TSP\TSP\bin\Debug\TSP.pdb
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\MainWindow.g.cs
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\App.g.cs
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP_MarkupCompile.cache
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP_MarkupCompile.lref
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\MainWindow.baml
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.g.resources
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.Properties.Resources.resources
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.csproj.GenerateResource.Cache
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.csproj.CoreCompileInputs.cache
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.exe
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.pdb
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.csprojResolveAssemblyReference.cache
