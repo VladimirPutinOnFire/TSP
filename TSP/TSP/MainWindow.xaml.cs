@@ -31,7 +31,7 @@ namespace TSP
         int CityCount = 5;
         Dictionary<int, City> Städte = new Dictionary<int, City>();
         private List<UIElement> KontrollElementeCity = new List<UIElement>();
-        private List<UIElement> KontrollElementeLabel = new List<UIElement>();
+        private List<Label> KontrollElementeLabel = new List<Label>();
 
         public MainWindow()
         {
@@ -57,9 +57,6 @@ namespace TSP
                 //TODO: X- und Y-Position random implementieren
                 Städte.Add(Cityindex, new City(Cityname, Cityindex, X, Y));
             }
-            
-            //Label der ersten Stadt mit dem richtigen Namen versehen
-            City1Label.Content = Städte[1].Name;
 
             //Die Zugriffsliste für die UI-Elemente initialisieren
             //Die UI-Elemente an die ausgewürfelten Positionen setzen
@@ -73,8 +70,15 @@ namespace TSP
             //note: ist dynamisch, solange die Listenelemente (UIElement) dynamisch dazukommen)
             for (int i = 0; i < CityCount; i++)
             {
-                Canvas.SetTop(KontrollElementeCity[i], Städte[i+1].Y);
-                Canvas.SetLeft(KontrollElementeCity[i], Städte[i+1].X);
+                //Position des City Images
+                Canvas.SetTop(KontrollElementeCity[i], Städte[i + 1].Y);
+                Canvas.SetLeft(KontrollElementeCity[i], Städte[i + 1].X);
+                //Position des zugehörigen Labels
+                Canvas.SetTop(KontrollElementeLabel[i], Städte[i + 1].Y);
+                Canvas.SetLeft(KontrollElementeLabel[i], Städte[i + 1].X+25);
+                //Name des Stadt auf das Label schreiben
+                KontrollElementeLabel[i].Content = Städte[i + 1].Name;
+
             }
         }
 
@@ -88,6 +92,10 @@ namespace TSP
             KontrollElementeCity.Add(City5);
 
             KontrollElementeLabel.Add(City1Label);
+            KontrollElementeLabel.Add(City2Label);
+            KontrollElementeLabel.Add(City3Label);
+            KontrollElementeLabel.Add(City4Label);
+            KontrollElementeLabel.Add(City5Label);
             //KontrollElemente.FirstOrDefault(x => x.  )
             /*
             for (int i = 0; i < Städte.Count(); i++)
