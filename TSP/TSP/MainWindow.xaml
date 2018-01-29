@@ -10,7 +10,7 @@
         Title="MainWindow" 
         ResizeMode="NoResize"
         Height="800"
-        Width="800"
+        Width="1600"
         SizeToContent="WidthAndHeight"
         Topmost="False"
         WindowState="Normal"
@@ -27,9 +27,10 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
-        <Style TargetType="Label">
+        <Style TargetType="TextBlock">
             <Setter Property="Width" Value="50"/>
-            
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
         <sys:String x:Key="strBye">Auf Wiedersehen</sys:String>
     </Window.Resources>
@@ -44,24 +45,34 @@
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="600"/>
             <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="600"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Fläche für die Städte -->
+        <!--Fläche für die Städte-->
         <Canvas Name="Playground"  Grid.Row="1" Grid.Column="1" Background="Green">
             <Border BorderBrush="Black" BorderThickness="3" Height="600" Width="600" Canvas.Left="1"/>
-            <Image x:Name="City1" Canvas.Left="161" Canvas.Top="100" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3.75,0.729"/>
-            <Label x:Name="City1Label" Content="Stadt" Canvas.Left="342" Canvas.Top="201" RenderTransformOrigin="5.237,0.923"/>
-            <Image x:Name="City2" Canvas.Left="250" Canvas.Top="443" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
-            <Label x:Name="City2Label" Content="Stadt" Canvas.Left="224" Canvas.Top="173" RenderTransformOrigin="5.237,0.923"/>
-            <Image x:Name="City3" Canvas.Left="474" Canvas.Top="349" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
-            <Label x:Name="City3Label" Content="Stadt" Canvas.Left="194" Canvas.Top="243" RenderTransformOrigin="5.237,0.923"/>
-            <Image x:Name="City4" Canvas.Left="91" Canvas.Top="310" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
-            <Label x:Name="City4Label" Content="Stadt" Canvas.Left="342" Canvas.Top="292" RenderTransformOrigin="5.237,0.923"/>
-            <Image x:Name="City5" Canvas.Left="432" Canvas.Top="143" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
-            <Label x:Name="City5Label" Content="Stadt" Canvas.Left="224" Canvas.Top="308" RenderTransformOrigin="5.237,0.923"/>
+            <Image x:Name="City1" Canvas.Left="224" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3.75,0.729"/>
+            <TextBlock x:Name="City1TextBlock" Text="Stadt" Canvas.Left="317" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
+            <Image x:Name="City2" Canvas.Left="317" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
+            <TextBlock x:Name="City2TextBlock" Text="Stadt" Canvas.Left="175" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
+            <Image x:Name="City3" Canvas.Left="368" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
+            <TextBlock x:Name="City3TextBlock" Text="Stadt" Canvas.Left="224" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
+            <Image x:Name="City4" Canvas.Left="175" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
+            <TextBlock x:Name="City4TextBlock" Text="Stadt" Canvas.Left="368" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
+            <Image x:Name="City5" Canvas.Left="270" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
+            <TextBlock x:Name="City5TextBlock" Text="Stadt" Canvas.Left="270" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
         </Canvas>
 
-        <Button Name="Generieren" Click="Generieren_Click" Grid.Row="1" Grid.Column="2"  Margin="10,109,10,261" RenderTransformOrigin="0.612,4.767">Generieren</Button>
-        <Button Name="Close" Click="Close_Click" Grid.Row="2" Grid.Column="2" Margin="10,31,10,39">Schließen</Button>
+        <Button Name="BtnGenerieren" Click="Generieren_Click" Grid.Row="1" Grid.Column="2"  Margin="10,109,10,261" RenderTransformOrigin="0.612,4.767">Generieren</Button>
+        <Button Name="BtnDistanzen" Click="Distanzen_Anzeigen_Click" Grid.Row="1" Grid.Column="2">Distanzen</Button>
+        <Button Name="BtnClose" Click="Close_Click" Grid.Row="2" Grid.Column="2" Margin="10,31,10,39">Schließen</Button>
+        
+        <!--Ergebnisausgabe auf der rechten Seite-->
+        <ScrollViewer Grid.Row="1" Grid.Column="3">
+            <TextBlock Name="Ausgabe" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Text="Lorem Ipsum" Height="600" Width="600" RenderTransformOrigin="0.109,0.018"
+                   Background="Black" Foreground="#FFECCD07" />
+        </ScrollViewer>
     </Grid>
 </Window>

@@ -18,8 +18,6 @@ namespace TSP
 {
     /*
      * TODO: 
-     * -Labels unter den Städten anbringen
-     * -Label um Koordinaten ergänzen
      * -DataBinding
      * -Distanz zwischen den einzelnen Städten berechnen
      * -Distanz zwischen den Städten grafisch anzeigen
@@ -27,11 +25,12 @@ namespace TSP
      * 
      * */
     public partial class MainWindow : Window
-    {
+    {   
         int CityCount = 5;
         Dictionary<int, City> Städte = new Dictionary<int, City>();
         private List<UIElement> KontrollElementeCity = new List<UIElement>();
-        private List<Label> KontrollElementeLabel = new List<Label>();
+        private List<TextBlock> KontrollElementeTextBlock = new List<TextBlock>();
+        private Dictionary<String, double> Distanzen = new Dictionary<String, double>();
 
         public MainWindow()
         {
@@ -62,9 +61,10 @@ namespace TSP
             //Die UI-Elemente an die ausgewürfelten Positionen setzen
             InitControlList();
             Position_Anpassen();
+            Distanzen_Berechnen();
         }
 
-        public void Position_Anpassen()
+        private void Position_Anpassen()
         {
             //erstmal statisch an die XAML Elemente binden. TODO: dynamisch generieren
             //note: ist dynamisch, solange die Listenelemente (UIElement) dynamisch dazukommen)
@@ -73,13 +73,51 @@ namespace TSP
                 //Position des City Images
                 Canvas.SetTop(KontrollElementeCity[i], Städte[i + 1].Y);
                 Canvas.SetLeft(KontrollElementeCity[i], Städte[i + 1].X);
-                //Position des zugehörigen Labels
-                Canvas.SetTop(KontrollElementeLabel[i], Städte[i + 1].Y);
-                Canvas.SetLeft(KontrollElementeLabel[i], Städte[i + 1].X+25);
-                //Name des Stadt auf das Label schreiben
-                KontrollElementeLabel[i].Content = Städte[i + 1].Name;
+                //Position des zugehörigen TextBlocks
+                Canvas.SetTop(KontrollElementeTextBlock[i], Städte[i + 1].Y-6);
+                Canvas.SetLeft(KontrollElementeTextBlock[i], Städte[i + 1].X+25);
+                //Name des Stadt in den TextBlock schreiben
+                KontrollElementeTextBlock[i].Text = String.Format("{0}  ({1},{2})", 
+                    Städte[i + 1].Name, Städte[i + 1].X, Städte[i + 1].Y);
 
             }
+        }
+
+        private void Distanzen_Berechnen()
+        {
+            Distanzen.Clear();
+
+            for (int i = 0; i < CityCount; i++)
+            {
+                for (int i2 = i + 1; i2 < CityCount; i2++)
+                {
+                    String Route1 = Städte[i + 1].Name.Substring(4);
+                    double Distanz = 0;
+                    String Route2 = Städte[i2 + 1].Name.Substring(4);
+                    Route2 += Route1;
+                    Route1 += Städte[i2 + 1].Name.Substring(4);
+
+                    Distanz = Math.Sqrt((((Städte[i + 1].X - Städte[i2 + 1].X) * (Städte[i + 1].X - Städte[i2 + 1].X))
+                                       + ((Städte[i + 1].Y - Städte[i2 + 1].Y) * (Städte[i + 1].Y - Städte[i2 + 1].Y))));
+                    
+                    Distanzen.Add(Route1,Distanz);
+                    Distanzen.Add(Route2, Distanz);
+                }
+            }
+        }
+
+        private void Distanzen_Anzeigen()
+        {
+            Ausgabe.Text = "";
+            foreach (KeyValuePair<String, double> entry in Distanzen)
+            {
+                Ausgabe.Text += (String.Format("Strecke: {0} Distanz: {1:0}{2}", entry.Key, entry.Value, Environment.NewLine));
+            }       
+        }
+
+        private void Distanzen_Anzeigen_Click(object sender, RoutedEventArgs e)
+        {
+            Distanzen_Anzeigen();
         }
 
         private void InitControlList()
@@ -91,11 +129,11 @@ namespace TSP
             KontrollElementeCity.Add(City4);
             KontrollElementeCity.Add(City5);
 
-            KontrollElementeLabel.Add(City1Label);
-            KontrollElementeLabel.Add(City2Label);
-            KontrollElementeLabel.Add(City3Label);
-            KontrollElementeLabel.Add(City4Label);
-            KontrollElementeLabel.Add(City5Label);
+            KontrollElementeTextBlock.Add(City1TextBlock);
+            KontrollElementeTextBlock.Add(City2TextBlock);
+            KontrollElementeTextBlock.Add(City3TextBlock);
+            KontrollElementeTextBlock.Add(City4TextBlock);
+            KontrollElementeTextBlock.Add(City5TextBlock);
             //KontrollElemente.FirstOrDefault(x => x.  )
             /*
             for (int i = 0; i < Städte.Count(); i++)
@@ -109,8 +147,8 @@ namespace TSP
         {
             String name = "Bielefeld";
             int number = 66;
-            int x = 300;
-            int y = 300;
+            double x = 300;
+            double y = 300;
 
             public City(String name, int number, int x, int y)
             {
@@ -122,8 +160,8 @@ namespace TSP
 
             public int Number { get => number; set => number = value; }
             public string Name { get => name; set => name = value; }
-            public int X { get => x; set => x = value; }
-            public int Y { get => y; set => y = value; }
+            public double X { get => x; set => x = value; }
+            public double Y { get => y; set => y = value; }
 
         }
 
@@ -132,6 +170,7 @@ namespace TSP
             MessageBox.Show("Tschüss!","Anwendung schließen");
             this.Close();
         }
+
     }
 
     public static class HilfsMethoden
