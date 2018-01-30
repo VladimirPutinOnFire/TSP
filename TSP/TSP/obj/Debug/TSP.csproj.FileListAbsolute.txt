@@ -13,3 +13,4 @@ C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.csproj.CoreCompileInputs.cach
 C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.exe
 C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.pdb
 C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\TSP.csprojResolveAssemblyReference.cache
+C:\Users\Ibykus\source\repos\TSP\TSP\obj\Debug\GeneratedInternalTypeHelper.g.cs

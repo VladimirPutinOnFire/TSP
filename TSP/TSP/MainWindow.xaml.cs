@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,25 +20,35 @@ namespace TSP
 {
     /*
      * TODO: 
-     * -DataBinding
-     * -Distanz zwischen den einzelnen Städten berechnen
      * -Distanz zwischen den Städten grafisch anzeigen
      * -Neu generierte Städte mit moveTo animieren
+     * -DataBinding Part 2, Die Binding Klasse
      * 
      * */
     public partial class MainWindow : Window
-    {   
+    {
         int CityCount = 5;
         Dictionary<int, City> Städte = new Dictionary<int, City>();
         private List<UIElement> KontrollElementeCity = new List<UIElement>();
         private List<TextBlock> KontrollElementeTextBlock = new List<TextBlock>();
         private Dictionary<String, double> Distanzen = new Dictionary<String, double>();
 
+        //Das Source Objekt für das Databinding
+        Data daten = new Data();
+
+        private void BtnTest_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
         public MainWindow()
         {
             this.Title = "TSP";
             InitializeComponent();
-            DataContext = this;
+            DataContext = daten;
+
+            //TODO: Binding-Klasse angehen -> Testbox.SetBinding(TextBlock.TextProperty, dieBindung);
+
         }
 
         private void Generieren_Click(object sender, RoutedEventArgs e)
@@ -86,21 +98,26 @@ namespace TSP
         private void Distanzen_Berechnen()
         {
             Distanzen.Clear();
-
             for (int i = 0; i < CityCount; i++)
             {
                 for (int i2 = i + 1; i2 < CityCount; i2++)
                 {
-                    String Route1 = Städte[i + 1].Name.Substring(4);
-                    double Distanz = 0;
-                    String Route2 = Städte[i2 + 1].Name.Substring(4);
-                    Route2 += Route1;
-                    Route1 += Städte[i2 + 1].Name.Substring(4);
+                    //Routen-Strings werden im Format <AnfangsStadtNr, EndStadtNr> angegeben
+                    //String Route1 = (Städte[i + 1].Number).ToString() + (Städte[i2 + 1].Number).ToString();
+                    //String Route2 = (Städte[i2 + 1].Number).ToString() + (Städte[i + 1].Number).ToString();
 
+                    //Routen-Strings werden im Format <AnfangsStadtName -> EndStadtName> angegeben
+                    String Route1 = Städte[i + 1].Name + " -> " + Städte[i2 + 1].Name;
+                    String Route2 = Städte[i2 + 1].Name + " -> " + Städte[i + 1].Name;
+
+                    //Satz des Pythagoras yo
+                    double Distanz = 0;
                     Distanz = Math.Sqrt((((Städte[i + 1].X - Städte[i2 + 1].X) * (Städte[i + 1].X - Städte[i2 + 1].X))
                                        + ((Städte[i + 1].Y - Städte[i2 + 1].Y) * (Städte[i + 1].Y - Städte[i2 + 1].Y))));
-                    
-                    Distanzen.Add(Route1,Distanz);
+
+                    //Beide Routen Richtungen werden hinzugefügt, damit später der Algorithmus 
+                    //nicht mehr selbst rechnen muss, sondern direkt beide Varianten abfragen kann
+                    Distanzen.Add(Route1, Distanz);
                     Distanzen.Add(Route2, Distanz);
                 }
             }
@@ -108,11 +125,11 @@ namespace TSP
 
         private void Distanzen_Anzeigen()
         {
-            Ausgabe.Text = "";
+            daten.AusgabeText = "";
             foreach (KeyValuePair<String, double> entry in Distanzen)
             {
-                Ausgabe.Text += (String.Format("Strecke: {0} Distanz: {1:0}{2}", entry.Key, entry.Value, Environment.NewLine));
-            }       
+                daten.AusgabeText += (String.Format("Strecke: {0}     Distanz: {1:0}{2}", entry.Key, entry.Value, Environment.NewLine));
+            }
         }
 
         private void Distanzen_Anzeigen_Click(object sender, RoutedEventArgs e)
@@ -171,6 +188,7 @@ namespace TSP
             this.Close();
         }
 
+
     }
 
     public static class HilfsMethoden
@@ -188,6 +206,32 @@ namespace TSP
             DoubleAnimation anim2 = new DoubleAnimation(left, newX - left, TimeSpan.FromSeconds(10));
             trans.BeginAnimation(TranslateTransform.XProperty, anim1);
             trans.BeginAnimation(TranslateTransform.YProperty, anim2);
+        }
+    }
+
+    public class Data : INotifyPropertyChanged
+    {
+        private String testString = "Jetzt funktioniert Databinding";
+        public String TestString
+        {
+            get { return testString; }
+            set { testString = value; NotifyPropertyChanged("TestString"); }
+        }
+
+        private String ausgabeText = "Lorem Ipsum Dolores";
+        public String AusgabeText
+        {
+            get { return ausgabeText; }
+            set { ausgabeText = value; NotifyPropertyChanged("AusgabeText"); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

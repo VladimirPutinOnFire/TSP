@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TSP"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:c="clr-namespace:TSP"
         mc:Ignorable="d"
         
         Title="MainWindow" 
@@ -34,7 +34,16 @@
         </Style>
         <sys:String x:Key="strBye">Auf Wiedersehen</sys:String>
     </Window.Resources>
-
+    <!--DataBinding
+        <c:Data x:Key="daten"/>
+        <Grid.Resources>
+            <c:Data x:Key="daten"/>
+        </Grid.Resources>
+        <Grid.DataContext>
+            <Binding Source="{DynamicResource daten}"/>
+        </Grid.DataContext>
+        <TextBox Name="Testbox" TextWrapping="Wrap" Text="{Binding Path=TestString, UpdateSourceTrigger=PropertyChanged}" Margin="240,-94,192,603"/>
+        -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -51,7 +60,8 @@
 
         <!--Fläche für die Städte-->
         <Canvas Name="Playground"  Grid.Row="1" Grid.Column="1" Background="Green">
-            <Border BorderBrush="Black" BorderThickness="3" Height="600" Width="600" Canvas.Left="1"/>
+            <Border BorderBrush="Black" BorderThickness="3" Height="600" Width="600" Canvas.Left="1">
+            </Border>
             <Image x:Name="City1" Canvas.Left="224" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3.75,0.729"/>
             <TextBlock x:Name="City1TextBlock" Text="Stadt" Canvas.Left="317" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
             <Image x:Name="City2" Canvas.Left="317" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
@@ -63,16 +73,18 @@
             <Image x:Name="City5" Canvas.Left="270" Canvas.Top="90" Source=".\resources\city.png" Height="24" Width="24" RenderTransformOrigin="3,1.417"/>
             <TextBlock x:Name="City5TextBlock" Text="Stadt" Canvas.Left="270" Canvas.Top="119" RenderTransformOrigin="5.237,0.923"/>
         </Canvas>
-
         <Button Name="BtnGenerieren" Click="Generieren_Click" Grid.Row="1" Grid.Column="2"  Margin="10,109,10,261" RenderTransformOrigin="0.612,4.767">Generieren</Button>
         <Button Name="BtnDistanzen" Click="Distanzen_Anzeigen_Click" Grid.Row="1" Grid.Column="2">Distanzen</Button>
+        <Button Name="BtnTest" Click="BtnTest_Click" Grid.Row="1" Grid.Column="2" Margin="10,356,10,214">Test</Button>
         <Button Name="BtnClose" Click="Close_Click" Grid.Row="2" Grid.Column="2" Margin="10,31,10,39">Schließen</Button>
         
         <!--Ergebnisausgabe auf der rechten Seite-->
         <ScrollViewer Grid.Row="1" Grid.Column="3">
             <TextBlock Name="Ausgabe" HorizontalAlignment="Left" VerticalAlignment="Top"
-                   Text="Lorem Ipsum" Height="600" Width="600" RenderTransformOrigin="0.109,0.018"
-                   Background="Black" Foreground="#FFECCD07" />
+                       Height="600" Width="600" RenderTransformOrigin="0.109,0.018"
+                       Background="Black" Foreground="#FFECCD07" 
+                       Text="{Binding Path=AusgabeText}"   
+                       />
         </ScrollViewer>
     </Grid>
 </Window>
