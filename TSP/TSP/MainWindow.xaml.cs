@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CsvHelper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -31,7 +33,7 @@ namespace TSP
      * */
     public partial class MainWindow : Window
     {
-        int CityCount = 5;
+        int CityCount = 100;
         
         bool FirstGenerated = true;
         Dictionary<int, City> Städte = new Dictionary<int, City>();
@@ -54,6 +56,7 @@ namespace TSP
         { 
             TestBlock.Text = String.Format("Gesamtdistanz City 1 bis 5: {0:0}{1}", Permutation_Gesamtdistanz_Berechnen(Permutation), Environment.NewLine );
             TestBlock.Text += String.Format("Die Strecke von City 2 bis City 3 ist: {0:0}", Konkrete_Distanz_Berechnen(Städte[2], Städte[3]));
+            Zufallslösungen();
         }
 
         public MainWindow()
@@ -74,6 +77,10 @@ namespace TSP
         private void Generieren()
         {
             InitControlList();
+
+
+            //TODO: Animation dynamisieren
+            /*
             if (FirstGenerated)
             {
                 for (int i = 0; i < CityCount; i++)
@@ -90,7 +97,9 @@ namespace TSP
                 }
                 FirstGenerated = false;
             }
-            else
+            */
+
+            //else
             {
                 //Ohne Animation
                 if (!AnimationCheckBox.IsChecked.Value)
@@ -114,7 +123,8 @@ namespace TSP
                     //Die Zugriffsliste für die UI-Elemente initialisieren
                     //Die UI-Elemente an die ausgewürfelten Positionen setzen
 
-                    Position_Anpassen();
+
+                    //Position_Anpassen();
 
                 }
                 //Mit Animation
@@ -334,14 +344,248 @@ namespace TSP
             CityListe.Clear();
             for (int i = 0; i < CityCount - 1; i++)
             {
-            //permutation.Add(Städte[i + 2].Name);
             CityListe.Add(Städte[i + 2].Name);
-                //PermutationenListe.Add(Städte[i+2].Name);
             }
 
             Liste = GetPermutations<String>(CityListe , CityCount - 1);
             list = Liste.ToList();
         }
+
+        private void Zufallslösungen()
+        {
+            int Durchläufe = 1000;
+            List<String> RefRoute = Startlösung_Erstellen();
+            
+            
+            string path = "C:\\res\\rndausgabe.csv";
+            using (var w = new StreamWriter(path))
+            {
+                for (int i = 0; i < Durchläufe; i++)
+                {
+                    List<String> newRoute = Startlösung_Erstellen();
+                    Double NewDistanz = Permutation_Gesamtdistanz_Berechnen(newRoute);
+                    Double BestDistanz = Permutation_Gesamtdistanz_Berechnen(RefRoute);
+
+                    if (NewDistanz < BestDistanz)
+                    {
+                        RefRoute = new List<string>(newRoute);
+                    }
+                    var line = string.Format("{0:0}", Permutation_Gesamtdistanz_Berechnen(RefRoute));
+                    w.WriteLine(line);
+                    w.Flush();
+                }
+                //daten.AusgabeText += String.Format("{0} Die Gesamtdistanz der besten zufälligen Route ist: {1:0}", Environment.NewLine, BestDistanz);
+                
+            }
+        }
+
+        private void Simulated_Annealing()
+        {
+            List<String> Route = Startlösung_Erstellen();
+            Double Gesamtdistanz = Permutation_Gesamtdistanz_Berechnen(Route);
+            List<String> TempRoute;
+            Random rnd = new Random();
+            Double T = 2000;
+            Double Alpha = 0.99;
+            int Durchlaufanzahl = 1000;
+            
+            string path = "C:\\res\\ausgabe.csv";
+
+            using (var w = new StreamWriter(path))
+            {
+                for (int i = 0; i < Durchlaufanzahl; i++)
+                {
+                    //Zwei Städte in der Lösung (mit Ausnahme der ersten) vertauschen
+                    TempRoute = new List<string>(Route);
+
+                    //name_list2 = new List<string>(name_list1);
+
+                    int index1 = rnd.Next(1, CityCount);
+                    int index2 = rnd.Next(1, CityCount);
+                    while (index2 == index1)
+                    {
+                        index2 = rnd.Next(1, CityCount);
+                    }
+                    String Stadt1 = TempRoute[index1];
+                    String Stadt2 = TempRoute[index2];
+                    TempRoute[index2] = Stadt1;
+                    TempRoute[index1] = Stadt2;
+
+                    Double TempGesamtdistanz = Permutation_Gesamtdistanz_Berechnen(TempRoute);
+                    
+
+                    if (TempGesamtdistanz < Gesamtdistanz)
+                    {
+                        Route = new List<string>(TempRoute);
+                        Gesamtdistanz = TempGesamtdistanz;
+                    }
+                    else
+                    {
+                        if (rnd.NextDouble() < p_rechnen(T, TempGesamtdistanz, Gesamtdistanz))
+                        {
+                            Route = new List<string>(TempRoute);
+                            Gesamtdistanz = TempGesamtdistanz;
+                        }
+                    }
+                    T = T * Alpha;
+                    
+                    //Ausgabe der Zwischenschritte
+
+                    String Stadtroutetemp = "";
+                    for (int i2 = 0; i2 < CityCount; i2++)
+                    {
+                        Stadtroutetemp += Route[i2] + " -> ";
+                    }
+                    Stadtroutetemp += Route[0];
+                    //daten.AusgabeText += String.Format("{0} Die aktuell beste Route ist: {1}", Environment.NewLine, Stadtroutetemp);
+
+                    Double p = p_rechnen(T, TempGesamtdistanz, Gesamtdistanz);
+
+                    if (ZwischenSchrittCheckBox.IsChecked.Value)
+                    {
+                        daten.AusgabeText += String.Format("{0} Die Gesamtdistanz der Route ist: {1:0}", Environment.NewLine, Permutation_Gesamtdistanz_Berechnen(Route));
+                    }
+
+                    var line = string.Format("{0:0}", Gesamtdistanz);
+                    w.WriteLine(line);
+                    w.Flush();
+
+
+                }
+                //Ausgabe auf der rechten Seite der gefundenen Lösung
+                String Stadtroute = "";
+                for (int i2 = 0; i2 < CityCount; i2++)
+                {
+                    Stadtroute += Route[i2] + " -> ";
+                }
+                Stadtroute += Route[0];
+                if (EndrouteZeigenCheckBox.IsChecked.Value)
+                {
+                    daten.AusgabeText += String.Format("{0} Die beste Route ist: {1}", Environment.NewLine, Stadtroute);
+                }
+                daten.AusgabeText += String.Format("{0} Die Gesamtdistanz dieser Route ist: {1:0}", Environment.NewLine, Permutation_Gesamtdistanz_Berechnen(Route));
+            }
+        }
+
+        private double p_rechnen(Double T, Double Distanz1, Double Distanz2)
+        {
+            Double delta = Distanz1 - Distanz2;
+            Double Exponent = Math.Abs(delta/T);
+            Double p = Math.Exp(-Exponent);
+            return p;
+        }
+
+        private void Threshold_Accepting()
+        {
+            List<String> Route = Startlösung_Erstellen();
+            Double Gesamtdistanz = Permutation_Gesamtdistanz_Berechnen(Route);
+            List<String> TempRoute;
+            Random rnd = new Random();
+            Double T = 2000;
+            Double Alpha = 0.99;
+            int Durchlaufanzahl = 1000;
+
+            string path = "C:\\res\\ausgabe.csv";
+
+            using (var w = new StreamWriter(path))
+            {
+                for (int i = 0; i < Durchlaufanzahl; i++)
+                {
+                    //Zwei Städte in der Lösung (mit Ausnahme der ersten) vertauschen
+                    TempRoute = new List<string>(Route);
+
+                    //name_list2 = new List<string>(name_list1);
+
+                    int index1 = rnd.Next(1, CityCount);
+                    int index2 = rnd.Next(1, CityCount);
+                    while (index2 == index1)
+                    {
+                        index2 = rnd.Next(1, CityCount);
+                    }
+                    String Stadt1 = TempRoute[index1];
+                    String Stadt2 = TempRoute[index2];
+                    TempRoute[index2] = Stadt1;
+                    TempRoute[index1] = Stadt2;
+
+                    Double TempGesamtdistanz = Permutation_Gesamtdistanz_Berechnen(TempRoute);
+
+
+                    if (TempGesamtdistanz < Gesamtdistanz)
+                    {
+                        Route = new List<string>(TempRoute);
+                        Gesamtdistanz = TempGesamtdistanz;
+                    }
+                    else
+                    {
+                        if (rnd.NextDouble() < p_rechnen(T, TempGesamtdistanz, Gesamtdistanz))
+                        {
+                            Route = new List<string>(TempRoute);
+                            Gesamtdistanz = TempGesamtdistanz;
+                        }
+                    }
+                    T = T * Alpha;
+
+                    //Ausgabe der Zwischenschritte
+
+                    String Stadtroutetemp = "";
+                    for (int i2 = 0; i2 < CityCount; i2++)
+                    {
+                        Stadtroutetemp += Route[i2] + " -> ";
+                    }
+                    Stadtroutetemp += Route[0];
+                    //daten.AusgabeText += String.Format("{0} Die aktuell beste Route ist: {1}", Environment.NewLine, Stadtroutetemp);
+
+                    Double p = p_rechnen(T, TempGesamtdistanz, Gesamtdistanz);
+
+                    if (ZwischenSchrittCheckBox.IsChecked.Value)
+                    {
+                        daten.AusgabeText += String.Format("{0} Die Gesamtdistanz der Route ist: {1:0}", Environment.NewLine, Permutation_Gesamtdistanz_Berechnen(Route));
+                    }
+
+                    var line = string.Format("{0:0}", Gesamtdistanz);
+                    w.WriteLine(line);
+                    w.Flush();
+
+
+                }
+                //Ausgabe auf der rechten Seite der gefundenen Lösung
+                String Stadtroute = "";
+                for (int i2 = 0; i2 < CityCount; i2++)
+                {
+                    Stadtroute += Route[i2] + " -> ";
+                }
+                Stadtroute += Route[0];
+                if (EndrouteZeigenCheckBox.IsChecked.Value)
+                {
+                    daten.AusgabeText += String.Format("{0} Die beste Route ist: {1}", Environment.NewLine, Stadtroute);
+                }
+                daten.AusgabeText += String.Format("{0} Die Gesamtdistanz dieser Route ist: {1:0}", Environment.NewLine, Permutation_Gesamtdistanz_Berechnen(Route));
+            }
+        }
+
+        //vollständige zufällige Startpermutation mit Stadt 1 am Anfang und Ende angehängt
+        private List<String> Startlösung_Erstellen()
+        {
+            List<String> startlösung = new List<string>();
+            Random rnd = new Random();
+            CityListe.Clear();
+            for (int i = 0; i < CityCount - 1; i++)
+            {
+                CityListe.Add(Städte[i + 2].Name);
+            }
+            startlösung.Add(Städte[1].Name);
+            for (int i = 0; i < CityCount - 1; i++)
+            {
+                int zufallsstadtindex = rnd.Next(0, CityListe.Count());
+                String zufallsstadtname = CityListe[zufallsstadtindex];
+                CityListe.RemoveAt(zufallsstadtindex);
+                startlösung.Add(zufallsstadtname);
+            }
+
+            startlösung.Add(Städte[1].Name);
+            return startlösung;
+        }
+
 
         //Funktion für die rekursive Rückgabe von Listen
         private static IEnumerable<IEnumerable<T>>
@@ -355,7 +599,7 @@ namespace TSP
 
         private void BtnSolve_Click(object sender, RoutedEventArgs e)
         {
-            Permutationen_Rechnen();
+            Simulated_Annealing();
         }
 
         public class City
@@ -377,6 +621,36 @@ namespace TSP
             public string Name { get => name; set => name = value; }
             public double X { get => x; set => x = value; }
             public double Y { get => y; set => y = value; }
+        }
+
+        private void ZwischenSchrittCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void EndrouteZeigenCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnSA_Click(object sender, RoutedEventArgs e)
+        {
+            Simulated_Annealing();
+        }
+
+        private void BtnTA_Click(object sender, RoutedEventArgs e)
+        {
+            Threshold_Accepting();
+        }
+
+        private void BtnGDA_Click(object sender, RoutedEventArgs e)
+        {
+            Simulated_Annealing();
+        }
+
+        private void BtnRRT_Click(object sender, RoutedEventArgs e)
+        {
+            Simulated_Annealing();
         }
     }
 
@@ -416,6 +690,20 @@ namespace TSP
 
     public class Data : INotifyPropertyChanged
     {
+        private Double t = 1;
+        public Double T
+        {
+            get { return t; }
+            set { t = value; NotifyPropertyChanged("T"); }
+        }
+
+        private Double alpha = 1;
+        public Double Alpha
+        {
+            get { return alpha; }
+            set { alpha = value; NotifyPropertyChanged("Alpha"); }
+        }
+
         private String testString = "Jetzt funktioniert Databinding";
         public String TestString
         {

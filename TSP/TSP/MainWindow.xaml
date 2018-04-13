@@ -80,12 +80,24 @@
             <TextBlock x:Name="City5TextBlock" Text="Stadt" Canvas.Left="270" Canvas.Top="119" />
         </Canvas>
         <!--City Feld Buttons-->
+        <CheckBox x:Name="EndrouteZeigenCheckBox" Content="Endroute+" FontSize="14" Grid.Row="1" Grid.Column="2" Checked="EndrouteZeigenCheckBox_Checked" Grid.ColumnSpan="2" Margin="12,100,688,0" Grid.RowSpan="2"></CheckBox>
+        <CheckBox x:Name="ZwischenSchrittCheckBox" Content="Teillösung" FontSize="14" Grid.Row="1" Grid.Column="2" Checked="ZwischenSchrittCheckBox_Checked" Height="600" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="12,0,688,-34" Grid.RowSpan="2" ></CheckBox>
         <CheckBox x:Name="AnimationCheckBox" Content=""   Grid.Row="1" Grid.Column="2" Margin="10,162,72,0" VerticalAlignment="Top" RenderTransformOrigin="0,-0.267" Height="15" FontWeight="Bold" Checked="CheckBox_Checked"/>
         <Button x:Name="BtnGenerieren" Click="Generieren_Click" Grid.Row="1" Grid.Column="2"  Margin="10,109,10,261" RenderTransformOrigin="0.612,4.767" Content="Generieren"/>
         <Button x:Name="BtnDistanzen" Click="Distanzen_Anzeigen_Click" Grid.Row="1" Grid.Column="2" Margin="10,264,10,306" Content="Distanzen"/>
         <Button x:Name="BtnSolve" Click="BtnSolve_Click" Grid.Row="1" Grid.Column="2" Content="Lösen" Margin="10,317,10,253"/>
         <Button x:Name="BtnTest" Click="BtnTest_Click" Grid.Row="1" Grid.Column="2" Margin="10,371,10,199" Content="Test"/>
+        <Button x:Name="BtnSA" Click="BtnSA_Click" Grid.Row="1" Grid.Column="2" Margin="10,423,10,147" Content="SA"/>
+        <Button x:Name="BtnTA" Click="BtnTA_Click" Grid.Row="1" Grid.Column="2" Margin="10,467,10,103" Content="TA"/>
+        <Button x:Name="BtnGDA" Click="BtnGDA_Click" Grid.Row="1" Grid.Column="2" Margin="10,513,10,57" Content="GDA"/>
+        <Button x:Name="BtnRRT" Click="BtnRRT_Click" Grid.Row="1" Grid.Column="2" Margin="12,560,8,10" Content="RRT"/>
         <Button x:Name="BtnClose" Click="Close_Click" Grid.Row="2" Grid.Column="2" Margin="10,31,10,39" Content="Schließen"/>
+        <TextBlock Text="T Value: " FontSize="14" Canvas.Left="81" Canvas.Top="-70" Width="Auto" Grid.Column="3" Margin="22,22,614,50" Height="Auto"/>
+        <TextBox x:Name="TValueBox" Grid.Row="0" Grid.Column="3" Margin="74,22,592,50"></TextBox>
+        <TextBlock Text="Alpha Value: " FontSize="14" Canvas.Left="81" Canvas.Top="-70" Width="Auto" Grid.Column="3" Margin="147,22,438,50" Height="Auto"/>
+        <TextBox x:Name="AlphaValueBox" Grid.Row="0" Grid.Column="3" Margin="380,22,234,50"></TextBox>
+        <TextBlock Text="Durchläufe: " FontSize="14" Canvas.Left="81" Canvas.Top="-70" Width="Auto" Grid.Column="3" Margin="309,22,307,50" Height="Auto"/>
+        <TextBox x:Name="NBox" Grid.Row="0" Grid.Column="3" Margin="228,22,438,50"></TextBox>
         <!--Ausgabe Feld Buttons-->
         <Button x:Name="BtnAusgabeClear" Click="BtnAusgabeClear_Click" Grid.Row="1" Grid.Column="5" Content="Clear"/>
         <!--Ergebnisausgabe auf der rechten Seite-->
@@ -97,7 +109,7 @@
                        />
         </ScrollViewer>
 
-        
+
 
     </Grid>
 </Window>
